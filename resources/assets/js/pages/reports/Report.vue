@@ -22,7 +22,6 @@
               v-for="item in items"
               :key="item.title"
               avatar
-              @click=""
             >
               <v-list-tile-avatar>
                 <v-icon :class="[item.iconClass]">{{ item.icon }}</v-icon>
