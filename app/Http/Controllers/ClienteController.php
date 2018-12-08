@@ -72,4 +72,46 @@ class ClienteController extends Controller
         $str = PDF::Output('hello_world.pdf', 'E');
         return response($str);
     }
+
+    public function listBillboardRented()
+    {
+        PDF::SetTitle('Lista de vallas alquiladas');
+        PDF::setHeaderCallback(function ($pdf) {
+            $image_file = public_path('img/img.png');
+            $pdf->Image($image_file, 11, 5, 77, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+            $pdf->setCellPaddings(1, 1, 1, 1);
+            $pdf->setCellMargins(1, 1, 1, 1);
+            $pdf->SetFillColor(250, 250, 242);
+            $txt = "La Paz: Pedro Blanco Esq. Nicolas Acosta Nº 1471\nSanta Cruz: Av 2 de Agosto calle 6 lado capilla\nCochabamba: Av. Blanco Galindo Km. 11 (Aasana)\nE-mail: contactos@imagenpublicidad.com.bo";
+            $pdf->MultiCell(100, 19, $txt, 1, 'L', 1, 0, 97, 1, true);
+        });
+        PDF::AddPage('L', 'A4');
+        PDF::writeHTMLCell(0, 0, '10', '26', '<hr>', 0, 0, 0, true, 'J', true);
+        $style = array(
+            'border'  => false,
+            'padding' => 'auto',
+            'fgcolor' => array(137, 137, 137),
+            'bgcolor' => false,
+        );
+        PDF::write2DBarcode('https://www.imagenpublicidad.com.bo', 'QRCODE,M', 260, 2, 30, 25, $style, 'N');
+        $title = '<h1>Lista de vallas alquiladas actualmente</h1>';
+        PDF::writeHTMLCell(0, 0, '10', '30', $title, 0, 0, 0, true, 'J', true);
+        $subtitle = '<p>La lista se ordenará de forma descendente con las vallas que fueron alquiladas reciéntemente.</p>';
+        PDF::writeHTMLCell(0, 0, '10', '39', $subtitle, 0, 0, 0, true, 'J', true);
+        $date = "<b>" . date('d-m-Y') . "</b>";
+        PDF::writeHTMLCell(0, 0, '262', '30', $date, 0, 1, 0, true, '', true);
+        $str = PDF::Output('hello_world.pdf', 'E');
+        return response($str);
+    }
+
+    public function listGeneralBillboard()
+    {
+
+    }
+
+    public function listBillboardFiltered()
+    {
+
+    }
+
 }

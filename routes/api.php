@@ -29,4 +29,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('billboards', 'EspacioController@getListEspacios');
     Route::get('ciudades', 'CiudadController@listCiudades');
     Route::post('report', 'ClienteController@getReport');
+    Route::get('billboard-rented', 'ClienteController@listBillboardRented');
+    Route::get('general-bilboard', 'ClienteController@listGeneralBillboard');
+    Route::get('billboard-filtered', 'ClienteController@listBillboardFiltered');
 });
