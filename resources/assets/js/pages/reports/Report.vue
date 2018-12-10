@@ -57,6 +57,7 @@
                   :loading="item.loading" 
                   icon 
                   ripple 
+                  @click="listGeneralBillboard(item)"
                 >
                   <v-icon color="grey lighten-1">get_app</v-icon>
                 </v-btn>
@@ -137,12 +138,36 @@
             obj.disabled = true
           }
         })
-        axios.get(this.url)
+        axios.get('/api/billboard-rented')
         .then((response) => { 
           const str = response.data.slice(157);
           const linkSource = `data:application/octet-stream;base64,${str}`;
           const downloadLink = document.createElement("a");
-          const fileName = "reporte.pdf";
+          const fileName = "alquilados.pdf";
+          downloadLink.href = linkSource;
+          downloadLink.download = fileName;
+          downloadLink.click();
+          this.cleanItems();
+        })
+        .catch((error) => {
+          this.cleanItems();
+        })
+      },
+
+      listGeneralBillboard(item) {
+        this.items.forEach(obj => {
+          if (obj.title === item.title) {
+            obj.loading = true
+          } else {
+            obj.disabled = true
+          }
+        })
+        axios.get('/api/general-bilboard')
+        .then((response) => { 
+          const str = response.data.slice(157);
+          const linkSource = `data:application/octet-stream;base64,${str}`;
+          const downloadLink = document.createElement("a");
+          const fileName = "general.pdf";
           downloadLink.href = linkSource;
           downloadLink.download = fileName;
           downloadLink.click();

@@ -81,7 +81,7 @@
                   <v-btn 
                     slot="activator" 
                     icon  
-                    @click="getBillboardPdf(props.item)"
+                    @click="getBillboardDetail(props.item)"
                     :loading="props.item.loading"
                     :disabled="props.item.disabled"
                   >
@@ -171,7 +171,7 @@
         })
       },
 
-      getBillboardPdf(item) {
+      getBillboardDetail(item) {
         const billboard = this.items.find(i => i.id === item.id)
         const data = {data: JSON.stringify(billboard)}
         this.items.forEach(obj => {
@@ -181,7 +181,7 @@
             obj.disabled = true
           }
         })
-        axios.post('/api/report', data)
+        axios.post('/api/billboard-detail', data)
         .then((response) => { 
           const str = response.data.slice(157);
           const linkSource = `data:application/octet-stream;base64,${str}`;

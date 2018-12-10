@@ -28,7 +28,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('photosphere/{uuid}', 'EspacioController@getPhotosphere');
     Route::get('billboards', 'EspacioController@getListEspacios');
     Route::get('ciudades', 'CiudadController@listCiudades');
-    Route::post('report', 'ClienteController@getReport');
+    Route::post('billboard-detail', 'ClienteController@getBillboardDetail');
     Route::get('billboard-rented', 'ClienteController@listBillboardRented');
     Route::get('general-bilboard', 'ClienteController@listGeneralBillboard');
     Route::get('billboard-filtered', 'ClienteController@listBillboardFiltered');
