@@ -7,7 +7,7 @@ import Reports from '../pages/reports/Report.vue'
 import ShowProfile from '../pages/profile/Profile.vue'
 import FormProfile from '../pages/profile/FormProfile.vue'
 import Password from '../pages/profile/Password.vue'
-import ShowCity from '../pages/cities/ShowCity.vue'
+import ShowCity from '../pages/city/ShowCity.vue'
 import ShowBillboard from '../pages/billboard/ShowBillboard.vue'
 import ListBillboard from '../pages/billboard/ListBillboard.vue'
 
@@ -40,8 +40,8 @@ export default [
         component: Reports
       },
       {
-        path: '/cities',
-        name: 'Cities',
+        path: '/city',
+        name: 'City',
         component: {
           render (c) { return c('router-view') }
         },

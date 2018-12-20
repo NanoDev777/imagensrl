@@ -5,10 +5,6 @@
         <v-card>
           <v-toolbar color="grey darken-1" dark>
             <v-toolbar-title>Mis Reportes</v-toolbar-title>
-            <div>
-              <v-btn color="success" @click="getUuid()">Success</v-btn>
-              <p v-if="uuid != null">{{ uuid }}</p>
-            </div>
             <v-spacer></v-spacer>
             <v-btn icon>
               <v-icon>search</v-icon>
@@ -73,6 +69,7 @@
 
 <script>
   import Dialog from './Dialog.vue'
+  import { mapGetters } from 'vuex'
 
   export default {
     components: {
@@ -107,22 +104,17 @@
             loading: false,
             disabled: false
           }
-        ],
-        uuid: null
+        ]
       }
     },
 
-    created() {
+    computed: {
+      ...mapGetters([
+        'currentUser'
+      ])
     },
 
     methods: {
-      getUuid() {
-        axios.get('/api/uuid')
-        .then((response) => {
-          this.uuid = response.data
-        })
-      },
-
       cleanItems() {
         this.items.forEach(obj => {
           obj.loading = false 
@@ -138,7 +130,7 @@
             obj.disabled = true
           }
         })
-        axios.get('/api/billboard-rented')
+        axios.get(`/api/billboard-rented?client=${this.currentUser.client_id}`)
         .then((response) => { 
           const str = response.data.slice(157);
           const linkSource = `data:application/octet-stream;base64,${str}`;

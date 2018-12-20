@@ -51,6 +51,15 @@ axios.interceptors.response.use(
         modal: true
       })
     }
+    if (error.response.status >= 500) {
+      const msj = error.response.data
+      store.dispatch('responseMessage', {
+        type: 'error',
+        text: msj,
+        title: 'Error',
+        modal: true
+      })
+    }
     return Promise.reject(error)
   }
 )

@@ -156,7 +156,7 @@
     },
 
     created() {
-      let cities = new CityService(axios.get('/api/ciudades'))
+      let cities = new CityService(axios.get('/api/cities'))
       cities.list()
       .then(cities => {
         this.cities = cities.list
@@ -186,7 +186,7 @@
           const str = response.data.slice(157);
           const linkSource = `data:application/octet-stream;base64,${str}`;
           const downloadLink = document.createElement("a");
-          const fileName = "reporte.pdf";
+          const fileName = "detalle.pdf";
 
           downloadLink.href = linkSource;
           downloadLink.download = fileName;
@@ -240,7 +240,7 @@
           axios.get(this.buildURL())
           .then((response) => {
             this.totalItems = response.data.params.total
-            let a = response.data.espacios.data
+            const a = response.data.espacios.data
             const items = a.map(obj => {
               const rObj = {}
               rObj['id'] = obj.Id_espacio
@@ -251,6 +251,7 @@
               rObj['dimension'] = obj.Dimension
               rObj['illumination'] = obj.Iluminacion
               rObj['state'] = obj.Estado
+              rObj['image'] = obj.Url
               rObj['uuid'] = obj.uuid
               rObj['price'] = obj.Costo
               rObj['reserved'] = false

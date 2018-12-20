@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Espacio;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EspacioController extends Controller
 {
@@ -63,7 +64,8 @@ class EspacioController extends Controller
 
         $espacios = Espacio::join('tipo', 'espacio.Id_tipo', '=', 'tipo.Id_tipo')
             ->join('ciudad', 'ciudad.Id_ciudad', '=', 'espacio.Id_ciudad')
-            ->select('espacio.Id_espacio', 'ciudad.Nombre as Ciudad', 'espacio.Zona', 'espacio.Ubicacion', 'tipo.Nombre as Tipo', 'espacio.Dimension', 'espacio.Iluminacion', 'espacio.Estado', 'espacio.uuid', 'espacio.Costo')
+            ->join("imagen_cliente as i", "i.Id_espacio", "=", "espacio.Id_espacio")
+            ->select('espacio.Id_espacio', 'ciudad.Nombre as Ciudad', 'espacio.Zona', 'espacio.Ubicacion', 'tipo.Nombre as Tipo', 'espacio.Dimension', 'espacio.Iluminacion', 'espacio.Estado', 'espacio.uuid', 'espacio.Costo', 'i.Url')
             ->where('espacio.Estado', '!=', 0)
             ->orderBy('espacio.Id_espacio', 'DESC');
 
@@ -105,5 +107,34 @@ class EspacioController extends Controller
         ];
 
         return response()->json($response);
+    }
+
+    public function getTotalRented()
+    {
+        $espacios = Espacio::join('ciudad', 'espacio.Id_ciudad', '=', 'ciudad.Id_ciudad')
+            ->join('reserva', 'espacio.Id_espacio', '=', 'reserva.Id_espacio')
+            ->select('ciudad.Nombre as city', DB::raw('count(*) as total'))
+            ->where('reserva.Id_cliente', '=', 14)
+            ->where(function ($q) {
+                $q->where('reserva.Estado', 1)
+                    ->orWhere('reserva.Estado', 2);
+            })
+            ->groupBy('city')
+            ->get();
+
+        return response()->json($espacios);
+    }
+
+    public function getRentedActive()
+    {
+        $espacios = Espacio::join('ciudad', 'espacio.Id_ciudad', '=', 'ciudad.Id_ciudad')
+            ->join('reserva', 'espacio.Id_espacio', '=', 'reserva.Id_espacio')
+            ->select('ciudad.Nombre as city', DB::raw('count(*) as total'))
+            ->where('reserva.Id_cliente', '=', 14)
+            ->where('reserva.Condicion', '=', 1)
+            ->groupBy('city')
+            ->get();
+
+        return response()->json($espacios);
     }
 }

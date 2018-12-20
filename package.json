@@ -17,11 +17,11 @@
         "vue": "^2.5.7"
     },
     "dependencies": {
+        "@amcharts/amcharts4": "^4.0.8",
         "@google/markerclusterer": "^1.0.3",
         "google-maps": "^3.3.0",
         "moment": "^2.22.2",
         "nprogress": "^0.2.0",
-        "photo-sphere-viewer": "^3.4.1",
         "vee-validate": "^2.1.0-beta.11",
         "vue-router": "^3.0.1",
         "vue-snotify": "^3.2.1",

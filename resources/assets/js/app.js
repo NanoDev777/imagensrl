@@ -18,6 +18,7 @@ const options = {
 Vue.use(Vuetify)
 Vue.use(Snotify, options)
 Vue.use(VeeValidate)
+Vue.filter('formatDate', require('./filters/formatDate'));
 
 
 const app = new Vue({

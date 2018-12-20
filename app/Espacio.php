@@ -36,7 +36,7 @@ class Espacio extends Model
             ->join("cliente as c", "r.Id_cliente", "=", "c.Id_cliente")
             ->join("espacio as e", "r.Id_espacio", "=", "e.Id_espacio")
             ->join("ciudad as i", "e.Id_ciudad", "=", "i.Id_ciudad")
-            ->where('r.Estado', '=', 1)
+            ->where('r.Condicion', '=', 1)
             ->where('r.Id_cliente', '=', $cliente)
             ->select("e.Id_espacio as Id", "i.Nombre", "e.uuid", "e.Ubicacion", "e.latitude", "e.longitude")
             ->orderBy('r.Id_reserva', 'DESC')
@@ -74,12 +74,11 @@ class Espacio extends Model
             ->join("cliente as c", "r.Id_cliente", "=", "c.Id_cliente")
             ->join("espacio as e", "r.Id_espacio", "=", "e.Id_espacio")
             ->join("ciudad as i", "e.Id_ciudad", "=", "i.Id_ciudad")
-            ->join("tipo as t", "e.Id_tipo", "=", "t.Id_tipo")
             ->join("imagen as p", "p.Id_espacio", "=", "e.Id_espacio")
-            ->where('r.Estado', '=', 1)
+            ->where('r.Condicion', '=', 1)
             ->where('r.Id_cliente', '=', $cliente)
             ->where('i.Slug', '=', $slug)
-            ->select("e.Id_espacio", "e.Cod_espacio", "e.Zona", "e.Ubicacion", "e.Dimension", "e.Iluminacion", "t.Nombre as Tipo", "p.Imagen_1")
+            ->select("e.Id_espacio", "e.Cod_espacio", "e.Ubicacion", "p.Imagen_1", "r.Iluminacion", "r.Impresion", "r.fecha_inicio", "r.fecha_fin")
             ->orderBy('r.Id_reserva', 'DESC')
             ->get();
         if (is_null($espacios)) {
