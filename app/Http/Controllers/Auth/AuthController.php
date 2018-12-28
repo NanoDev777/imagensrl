@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Reserva;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -54,10 +55,19 @@ class AuthController extends Controller
 
         $data = json_decode($response->getContent());
 
+        $alert = Reserva::from('Reserva as r')
+            ->select(DB::raw('COUNT(*) as total'))
+            ->where('r.Condicion', '=', 1)
+            ->where('r.fecha_fin', '>=', DB::raw('NOW()'))
+            ->where('r.fecha_fin', '<=', DB::raw("NOW() + INTERVAL 7 DAY"))
+            ->where('r.Id_cliente', '=', $user->client_id)
+            ->first();
+
         return response()->json([
             'token'      => $data->access_token,
             'expires_in' => $data->expires_in,
             'user'       => $user,
+            'alert'      => $alert->total,
             'status'     => 200,
         ]);
     }

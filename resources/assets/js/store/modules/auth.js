@@ -4,7 +4,8 @@ const state = {
   user: null,
   authenticated: false,
   token: null,
-  expiration: null
+  expiration: null,
+  alert: null
 }
 
 const mutations = {
@@ -22,12 +23,18 @@ const mutations = {
     state.user = data
   },
 
+  SET_ALERT(state, alert) {
+    state.alert = alert
+  },
+
+
   LOGOUT(state) {
     localStorage.removeItem('token')
     state.token = null
     state.user = null
     state.authenticated = false
     state.expiration = null
+    state.alert = null
   }
 }
 
@@ -42,6 +49,10 @@ const actions = {
 
   saveUser({commit}, user) {
     commit('SET_CURRENT_USER', user)
+  },
+
+  saveAlert({commit}, alert) {
+    commit('SET_ALERT', alert)
   },
 
   async cleanSession ({ commit }) {
@@ -65,7 +76,11 @@ const getters = {
 
   authenticated: (state) => {
     return state.authenticated
-  }
+  },
+
+  getAlert: (state) => {
+    return state.alert
+  },
 }
 
 export default {

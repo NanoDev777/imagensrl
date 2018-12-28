@@ -74,11 +74,11 @@ class Espacio extends Model
             ->join("cliente as c", "r.Id_cliente", "=", "c.Id_cliente")
             ->join("espacio as e", "r.Id_espacio", "=", "e.Id_espacio")
             ->join("ciudad as i", "e.Id_ciudad", "=", "i.Id_ciudad")
-            ->join("imagen as p", "p.Id_espacio", "=", "e.Id_espacio")
+            ->join("imagen_cliente as p", "p.Id_espacio", "=", "e.Id_espacio")
             ->where('r.Condicion', '=', 1)
             ->where('r.Id_cliente', '=', $cliente)
             ->where('i.Slug', '=', $slug)
-            ->select("e.Id_espacio", "e.Cod_espacio", "e.Ubicacion", "p.Imagen_1", "r.Iluminacion", "r.Impresion", "r.fecha_inicio", "r.fecha_fin")
+            ->select("e.Id_espacio", "e.Cod_espacio", "e.Ubicacion", "p.Url", "r.Iluminacion", "r.Impresion", "r.fecha_inicio", "r.fecha_fin")
             ->orderBy('r.Id_reserva', 'DESC')
             ->get();
         if (is_null($espacios)) {

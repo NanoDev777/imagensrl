@@ -10,6 +10,8 @@ import Password from '../pages/profile/Password.vue'
 import ShowCity from '../pages/city/ShowCity.vue'
 import ShowBillboard from '../pages/billboard/ShowBillboard.vue'
 import ListBillboard from '../pages/billboard/ListBillboard.vue'
+import ShowAlert from '../pages/alert/ShowAlert.vue'
+import FormAlert from '../pages/alert/FormAlert.vue'
 
 export default [
   {
@@ -38,6 +40,26 @@ export default [
         path: '/reports',
         name: 'Reports',
         component: Reports
+      },
+      {
+        path: '/alert',
+        name: 'Alert',
+        redirect: '/alert',
+        component: {
+          render (c) { return c('router-view') }
+        },
+        children: [
+          {
+            path: '',
+            name: 'ShowAlert',
+            component: ShowAlert
+          },
+          {
+            path: 'edit',
+            name: 'EditAlert',
+            component: FormAlert
+          }
+        ]
       },
       {
         path: '/city',

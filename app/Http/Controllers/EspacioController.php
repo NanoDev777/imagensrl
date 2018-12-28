@@ -28,7 +28,7 @@ class EspacioController extends Controller
             }
             return response()->json(["espacios" => $espacios, "ciudades" => $ciudades, "vallas" => $v, "total" => $t], 200);
         } else {
-            return response()->json(['error' => 'inténtelo más tarde'], 500);
+            return response()->json('Ocurrió un problema, por favor recargue la página o inténtelo de nuevo más tarde.', 500);
         }
     }
 
@@ -38,7 +38,7 @@ class EspacioController extends Controller
         if ($espacios != null) {
             return response()->json(["data" => $espacios], 200);
         } else {
-            return response()->json(['error' => 'No se encontro el recurso'], 404);
+            return response()->json('No se encontró el recurso.', 404);
         }
     }
 
@@ -107,6 +107,29 @@ class EspacioController extends Controller
         ];
 
         return response()->json($response);
+    }
+
+    public function notifications(Request $request)
+    {
+        $client = $request->input('client');
+        $alert  = Espacio::from('Espacio as e')
+            ->join('Reserva as r', 'e.Id_espacio', '=', 'r.Id_espacio')
+            ->join('Ciudad as c', 'e.Id_ciudad', '=', 'c.Id_ciudad')
+            ->join('Imagen_cliente as i', 'e.Id_espacio', '=', 'i.Id_espacio')
+            ->select('i.Url as image', 'c.Nombre as city', 'c.Slug as slug', 'e.Ubicacion as location', DB::raw('datediff (MAX(r.fecha_fin),CURDATE()) as day'))
+            ->where('r.Condicion', '=', 1)
+            ->where('r.fecha_fin', '>=', DB::raw('NOW()'))
+            ->where('r.fecha_fin', '<=', DB::raw("NOW() + INTERVAL 7 DAY"))
+            ->where('r.Id_cliente', '=', $client)
+            ->groupBy('e.Id_espacio');
+
+        if ($request->has('filter')) {
+            $alert = $alert->orderBy('r.fecha_fin')->take(3);
+        }
+
+        $alert = $alert->get();
+
+        return response()->json($alert, 200);
     }
 
     public function getTotalRented()

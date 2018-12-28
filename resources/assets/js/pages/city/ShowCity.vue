@@ -10,6 +10,7 @@
           :rows-per-page-items="rowsPerPageItems"
           :pagination.sync="pagination"
           rows-per-page-text="Items por página"
+          no-data-text="No se encontraron resultados para esta ciudad."
         >
           <v-flex
             slot="item"
@@ -122,7 +123,7 @@
           rObj['print'] = obj.Impresion
           rObj['start'] = obj.fecha_inicio
           rObj['end'] = obj.fecha_fin
-          rObj['image'] = obj.Imagen_1
+          rObj['image'] = obj.Url
           rObj['loading'] = false
           rObj['disabled'] = false
           return rObj

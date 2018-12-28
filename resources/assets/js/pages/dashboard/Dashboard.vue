@@ -65,6 +65,12 @@
       }
     },
 
+    computed: {
+      ...mapGetters([
+        'currentUser'
+      ])
+    },
+
     mounted () {
       this.initMap()
     },
@@ -99,7 +105,7 @@
       },
       initMap() {
         GoogleMapsLoader.KEY = 'AIzaSyBrciONSLZYcR2kEKw24hgZnXIE7-G0me0';
-        axios.get('/api/espacios/14')
+        axios.get(`/api/espacios/${this.currentUser.client_id}`)
         .then((response) => {
           this.$store.dispatch('saveBillboard', response.data.espacios)
           this.markerCoordinates = response.data.espacios

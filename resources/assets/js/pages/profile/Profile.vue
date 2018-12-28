@@ -7,7 +7,7 @@
             <v-toolbar-title>Datos Del Usuario</v-toolbar-title>
           </v-toolbar>
           <v-list two-line>
-            <v-list-tile @click="">
+            <v-list-tile>
               <v-list-tile-action>
                 <v-icon color="indigo">person</v-icon>
               </v-list-tile-action>
@@ -20,7 +20,7 @@
 
             <v-divider inset></v-divider>
 
-            <v-list-tile @click="">
+            <v-list-tile>
               <v-list-tile-action>
                 <v-icon color="indigo">phone</v-icon>
               </v-list-tile-action>
@@ -37,7 +37,7 @@
 
             <v-divider inset></v-divider>
 
-            <v-list-tile @click="">
+            <v-list-tile>
               <v-list-tile-action>
                 <v-icon color="indigo">mail</v-icon>
               </v-list-tile-action>
@@ -50,7 +50,7 @@
 
             <v-divider inset></v-divider>
 
-            <v-list-tile @click="">
+            <v-list-tile>
               <v-list-tile-action>
                 <v-icon color="indigo">location_on</v-icon>
               </v-list-tile-action>
@@ -82,21 +82,10 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    data() {
-      return {
-      }
-    },
-
     computed: {
       ...mapGetters([
         'currentUser'
       ])
-    },
-
-    created() {
-    },
-
-    methods: {
     }
   }
 </script>

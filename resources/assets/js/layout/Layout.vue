@@ -110,7 +110,8 @@
           text: 'Configuración',
           model: false,
           children: [
-            { icon: 'person', text: 'Perfil', url: '/profile', }
+            { icon: 'person', text: 'Perfil', url: '/profile', },
+            { icon: 'notifications_active', text: 'Alerta', url: '/alert/edit', }
           ]
         }
       ],

@@ -13,12 +13,12 @@ class ReporteController extends Controller
     public function getBillboardRented(Request $request)
     {
         try {
-            $billboard = Reserva::from('reserva as r')
-                ->join("cliente as c", "r.Id_cliente", "=", "c.Id_cliente")
-                ->join("espacio as e", "r.Id_espacio", "=", "e.Id_espacio")
-                ->join("ciudad as i", "e.Id_ciudad", "=", "i.Id_ciudad")
-                ->join("tipo as t", "e.Id_tipo", "=", "t.Id_tipo")
-                ->join("imagen_cliente as p", "p.Id_espacio", "=", "e.Id_espacio")
+            $billboard = Reserva::from('Reserva as r')
+                ->join("Cliente as c", "r.Id_cliente", "=", "c.Id_cliente")
+                ->join("Espacio as e", "r.Id_espacio", "=", "e.Id_espacio")
+                ->join("Ciudad as i", "e.Id_ciudad", "=", "i.Id_ciudad")
+                ->join("Tipo as t", "e.Id_tipo", "=", "t.Id_tipo")
+                ->join("Imagen_cliente as p", "p.Id_espacio", "=", "e.Id_espacio")
                 ->where('r.Id_espacio', '=', $request->input('billboard'))
                 ->select("i.Nombre as Ciudad", "e.uuid", "e.Zona", "e.Ubicacion", "e.Dimension", "t.Nombre as Tipo", "p.Url", "r.Iluminacion", "r.Impresion", "r.fecha_inicio", "r.fecha_fin")
                 ->orderBy('r.Id_reserva', 'DESC')
@@ -169,11 +169,11 @@ class ReporteController extends Controller
     public function listBillboardRented(Request $request)
     {
         try {
-            $billboards = Reserva::from('reserva as r')
-                ->join('cliente as c', 'r.Id_cliente', '=', 'c.Id_cliente')
-                ->join('espacio as e', 'r.Id_espacio', '=', 'e.Id_espacio')
-                ->join('ciudad as i', 'e.Id_ciudad', '=', 'i.Id_ciudad')
-                ->join('tipo as t', 'e.Id_tipo', '=', 't.Id_tipo')
+            $billboards = Reserva::from('Reserva as r')
+                ->join('Cliente as c', 'r.Id_cliente', '=', 'c.Id_cliente')
+                ->join('Espacio as e', 'r.Id_espacio', '=', 'e.Id_espacio')
+                ->join('Ciudad as i', 'e.Id_ciudad', '=', 'i.Id_ciudad')
+                ->join('Tipo as t', 'e.Id_tipo', '=', 't.Id_tipo')
                 ->where('r.Estado', '!=', 0)
                 ->where('r.Id_cliente', '=', $request->input('client'))
                 ->select('i.Nombre as Ciudad', 'e.Zona', 'e.Ubicacion', 't.Nombre as Tipo', 'r.Iluminacion', 'r.Impresion', 'r.fecha_inicio', 'r.fecha_fin', DB::raw('(CASE r.Condicion WHEN "1" THEN "ACTIVO" WHEN "0" THEN "TERMINADO" ELSE "TERMINADO" END) AS Estado'))
@@ -251,11 +251,12 @@ class ReporteController extends Controller
     public function listGeneralBillboard()
     {
         try {
-            $billboards = Espacio::join('tipo', 'espacio.Id_tipo', '=', 'tipo.Id_tipo')
-                ->join('ciudad', 'ciudad.Id_ciudad', '=', 'espacio.Id_ciudad')
-                ->select('ciudad.Nombre as Ciudad', 'espacio.Zona', 'espacio.Ubicacion', 'tipo.Nombre as Tipo', 'espacio.Dimension', 'espacio.Iluminacion', DB::raw('(CASE espacio.Estado WHEN "1" THEN "Disponible" WHEN "2" THEN "Ocupada" ELSE "No disponible" END) AS Estado'))
-                ->where('espacio.Estado', '!=', 0)
-                ->orderBy('espacio.Id_espacio', 'DESC')
+            $billboards = Espacio::from('Espacio as e')
+                ->join('Tipo as t', 'e.Id_tipo', '=', 't.Id_tipo')
+                ->join('Ciudad as c', 'c.Id_ciudad', '=', 'e.Id_ciudad')
+                ->select('c.Nombre as Ciudad', 'e.Zona', 'e.Ubicacion', 't.Nombre as Tipo', 'e.Dimension', 'e.Iluminacion', DB::raw('(CASE e.Estado WHEN "1" THEN "Disponible" WHEN "2" THEN "Ocupada" ELSE "No disponible" END) AS Estado'))
+                ->where('e.Estado', '!=', 0)
+                ->orderBy('e.Id_espacio', 'DESC')
                 ->get();
 
             PDF::SetTitle('Lista general de vallas');
@@ -323,16 +324,17 @@ class ReporteController extends Controller
     public function listBillboardFiltered(Request $request)
     {
         try {
-            $billboards = Espacio::join('tipo', 'espacio.Id_tipo', '=', 'tipo.Id_tipo')
-                ->join('ciudad', 'ciudad.Id_ciudad', '=', 'espacio.Id_ciudad')
-                ->select('ciudad.Nombre as Ciudad', 'espacio.Zona', 'espacio.Ubicacion', 'tipo.Nombre as Tipo', 'espacio.Dimension', 'espacio.Iluminacion', DB::raw('(CASE espacio.Estado WHEN "1" THEN "Disponible" WHEN "2" THEN "Ocupada" ELSE "No disponible" END) AS Estado'))
-                ->where('espacio.Estado', '!=', 0);
+            $billboards = Espacio::from('Espacio as e')
+                ->join('Tipo as t', 'e.Id_tipo', '=', 't.Id_tipo')
+                ->join('Ciudad as c', 'c.Id_ciudad', '=', 'e.Id_ciudad')
+                ->select('c.Nombre as Ciudad', 'e.Zona', 'e.Ubicacion', 't.Nombre as Tipo', 'e.Dimension', 'e.Iluminacion', DB::raw('(CASE e.Estado WHEN "1" THEN "Disponible" WHEN "2" THEN "Ocupada" ELSE "No disponible" END) AS Estado'))
+                ->where('e.Estado', '!=', 0);
 
             if ($request->has('city')) {
                 $city = $request->input('city');
 
                 $billboards = $billboards->where(function ($query) use ($city) {
-                    $query->where('ciudad.Nombre', 'LIKE', "%" . $city . "%");
+                    $query->where('c.Nombre', 'LIKE', "%" . $city . "%");
                 });
             }
 
@@ -340,7 +342,7 @@ class ReporteController extends Controller
                 $type = $request->input('type');
 
                 $billboards = $billboards->where(function ($query) use ($type) {
-                    $query->where('tipo.Nombre', 'LIKE', "%" . $type . "%");
+                    $query->where('t.Nombre', 'LIKE', "%" . $type . "%");
                 });
             }
 
@@ -348,18 +350,18 @@ class ReporteController extends Controller
                 $state = $request->input('state');
 
                 $billboards = $billboards->where(function ($query) use ($state) {
-                    $query->where('espacio.Estado', 'LIKE', "%" . $state . "%");
+                    $query->where('e.Estado', 'LIKE', "%" . $state . "%");
                 });
             }
             if ($request->has('filter')) {
                 $filter = $request->input('filter');
 
                 $billboards = $billboards->where(function ($query) use ($filter) {
-                    $query->where('espacio.Zona', 'LIKE', "%" . $filter . "%")
-                        ->orWhere('espacio.Ubicacion', 'LIKE', "%" . $filter . "%");
+                    $query->where('e.Zona', 'LIKE', "%" . $filter . "%")
+                        ->orWhere('e.Ubicacion', 'LIKE', "%" . $filter . "%");
                 });
             }
-            $billboards = $billboards->orderBy('espacio.Id_espacio', 'DESC')->get();
+            $billboards = $billboards->orderBy('e.Id_espacio', 'DESC')->get();
 
             PDF::SetTitle('Lista general de vallas');
             PDF::SetMargins(1, 33, 10);

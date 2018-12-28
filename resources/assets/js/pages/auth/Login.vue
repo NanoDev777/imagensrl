@@ -83,11 +83,11 @@
           vm.busy = false
           axios.post('api/login', vm.form)
           .then(({data}) => {
-            vm.busy = true
             if (data.status === 200) {
               vm.$store.dispatch('saveToken', data.token)
               vm.$store.dispatch('saveExpiration', data.expires_in + Date.now())
               vm.$store.dispatch('saveUser', data.user)
+              vm.$store.dispatch('saveAlert', data.alert)
               vm.$router.push({ name: 'Home' })
             }
           })
