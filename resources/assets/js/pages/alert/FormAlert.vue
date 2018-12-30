@@ -4,70 +4,41 @@
       <v-flex d-flex xs12 sm12 md12>
         <v-card v-show="success">
           <v-card-title primary-title>
-            <h3 class="headline mb-0">Editar Datos Del Usuario</h3>
+            <div>
+              <h3 class="headline mb-0">Editar Días de Alerta</h3>
+              <span class="body-1 mb-0">Puede actualizar los días restantes en los que desea recibir la alerta de sus alquileres a punto de finalizar.</span>
+            </div>
           </v-card-title>
           <v-container fluid>
             <v-layout>
               <v-flex xs12 sm12 md12 lg12>
                 <v-card>
+
                   <v-card-text>
+                    <small>Por defecto recibirá la alerta faltando 1 semana (puede cambiarla en cualquier momento).</small>
                     <v-layout row wrap>
                       <v-flex xs12 sm12 md5 lg5>
                         <v-layout row wrap>
                           <v-flex xs12 sm12 md12 lg12>
                             <v-text-field
-                              label="Nombre Usuario*"
-                              v-model="form.name"
-                              data-vv-name="name"
-                              v-validate="'required|max:20'"
-                              :error-messages="errors.collect('name')"
-                            ></v-text-field>
-                          </v-flex>
-                        </v-layout>
-                        <v-layout row wrap>
-                          <v-flex xs12 sm12 md12 lg12>
-                            <v-text-field
-                              label="Teléfono / Cel *"
-                              v-model="form.phone"
-                              data-vv-name="phone"
-                              v-validate="'required|max:20'"
-                              :error-messages="errors.collect('phone')"
-                            ></v-text-field>
-                          </v-flex>
-                        </v-layout>
-                        <v-layout row wrap>
-                          <v-flex xs12 sm12 md12 lg12>
-                            <v-text-field
-                              label="Correo Electrónico *"
-                              v-model="form.email"
-                              data-vv-name="email"
-                              v-validate="'required|email|max:30'"
-                              :error-messages="errors.collect('email')"
-                            ></v-text-field>
-                          </v-flex>
-                        </v-layout>
-                        <v-layout row wrap>
-                          <v-flex xs12 sm12 md12 lg12>
-                            <v-text-field
-                              label="Dirección *"
-                              v-model="form.address"
-                              data-vv-name="address"
-                              v-validate="'required|max:120'"
-                              :error-messages="errors.collect('address')"
+                              label="Días*"
+                              v-model="day"
+                              data-vv-name="day"
+                              v-validate="'required|numeric|max:3'"
+                              @focus ="$event.target.select()"
+                              :error-messages="errors.collect('day')"
                             ></v-text-field>
                           </v-flex>
                         </v-layout>
                         <v-layout row wrap>
                           <small>Los campos con (*) son obligatorios.</small>
-                          <v-spacer></v-spacer>
-                          <router-link to="password" v-if="id">Cambiar Contraseña</router-link>
                         </v-layout>
                       </v-flex>
                     </v-layout>
                   </v-card-text>
                   <v-divider class="mt-5"></v-divider>
                   <v-card-actions>
-                    <v-btn :disabled="loading" to="/profile">
+                    <v-btn :disabled="loading" to="/dashboard">
                       Cancelar
                     </v-btn>
                     <v-spacer></v-spacer>
@@ -86,6 +57,8 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
     $_veeValidate: {
       validator: 'new'
@@ -94,43 +67,27 @@
       return {
         success: false,
         loading: false,
-        id: this.$route.params.id,
-        form: {
-          name: '',
-          phone: '',
-          email: '',
-          address: ''
-        },
+        day: null,
         dictionary: {
           custom: {
-            name: {
+            day: {
               required: () => 'Este campo es requerido',
-              max: 'Este campo debe tener un máximo de 20 caracteres'
-            },
-            phone: {
-              required: () => 'Este campo es requerido',
-              max: 'Este campo debe tener un máximo de 20 caracteres'
-            },
-            email: {
-              required: () => 'Este campo es requerido',
-              max: 'Este campo debe tener un máximo de 30 caracteres',
-              email: 'El formato de correo es inválido'
-            },
-            address: {
-              required: () => 'Este campo es requerido',
-              max: 'Este campo debe tener un máximo de 120 caracteres'
+              numeric: 'Este campo solo puede contener números enteros',
+              max: 'Este campo debe tener un máximo de 3 caracteres'
             }
           }
         }
       }
     },
 
+    computed: {
+      ...mapGetters([
+        'currentUser'
+      ])
+    },
+
     created() {
-      if (this.id) {
-        this.showUser()
-      }else{
-        this.success = true
-      }
+      this.showAlert();
     },
 
     mounted () {
@@ -138,11 +95,11 @@
     },
 
     methods: {
-      showUser() {
-        axios.get(`/api/user/${this.id}`)
+      showAlert() {
+        axios.get(`/api/alerts/${this.currentUser.alert.id}`)
         .then(response => {
           if (response.data.success) {
-            this.form = response.data.data
+            this.day = response.data.data.day
           }
           this.success = true
         })
@@ -153,11 +110,10 @@
         vm.$validator.validateAll().then((result) => {
           if (result) {
             vm.loading = true
-            axios.put(`/api/user/${vm.id}`, vm.form)
+            axios.put(`/api/alerts/${vm.currentUser.alert.id}`, {day: vm.day})
             .then(response => {
               if(response.data.success) {
                 vm.$snotify.success(response.data.message, 'Felicidades')
-                vm.$store.dispatch('saveUser', response.data.user)
               }
               vm.loading = false
             })

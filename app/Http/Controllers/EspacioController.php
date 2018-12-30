@@ -109,7 +109,7 @@ class EspacioController extends Controller
         return response()->json($response);
     }
 
-    public function notifications(Request $request)
+    public function getAlerts(Request $request)
     {
         $client = $request->input('client');
         $alert  = Espacio::from('Espacio as e')

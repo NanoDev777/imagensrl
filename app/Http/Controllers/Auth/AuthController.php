@@ -55,6 +55,8 @@ class AuthController extends Controller
 
         $data = json_decode($response->getContent());
 
+        $user->alert;
+
         $alert = Reserva::from('Reserva as r')
             ->select(DB::raw('COUNT(*) as total'))
             ->where('r.Condicion', '=', 1)

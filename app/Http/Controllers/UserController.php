@@ -23,6 +23,7 @@ class UserController extends Controller
             $inputs = $request->all();
             $user   = User::find($id);
             $user->update($inputs);
+            $user->alert;
             return response()->json([
                 'success' => true,
                 'message' => 'Los datos se actualizaron con éxito!',

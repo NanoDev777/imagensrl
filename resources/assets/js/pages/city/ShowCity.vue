@@ -109,30 +109,40 @@
       ])
     },
 
+    watch: {
+      '$route' (to, from) {
+        this.getDetailCityRented();
+      }
+    },
+
     created() {
-      const url = `/api/detalle/${this.currentUser.client_id}/${this.slug}`;
-      axios.get(url)
-      .then( response => {
-        const a = response.data.data
-        this.spaces = a.map(obj => {
-          const rObj = {}
-          rObj['id'] = obj.Id_espacio
-          rObj['code'] = obj.Cod_espacio
-          rObj['location'] = obj.Ubicacion
-          rObj['illumination'] = obj.Iluminacion
-          rObj['print'] = obj.Impresion
-          rObj['start'] = obj.fecha_inicio
-          rObj['end'] = obj.fecha_fin
-          rObj['image'] = obj.Url
-          rObj['loading'] = false
-          rObj['disabled'] = false
-          return rObj
-        })
-        this.success = true
-      })
+      this.getDetailCityRented();
     },
 
     methods: {
+      getDetailCityRented() {
+        const url = `/api/detalle/${this.currentUser.client_id}/${this.slug}`;
+        axios.get(url)
+        .then( response => {
+          const a = response.data.data
+          this.spaces = a.map(obj => {
+            const rObj = {}
+            rObj['id'] = obj.Id_espacio
+            rObj['code'] = obj.Cod_espacio
+            rObj['location'] = obj.Ubicacion
+            rObj['illumination'] = obj.Iluminacion
+            rObj['print'] = obj.Impresion
+            rObj['start'] = obj.fecha_inicio
+            rObj['end'] = obj.fecha_fin
+            rObj['image'] = obj.Url
+            rObj['loading'] = false
+            rObj['disabled'] = false
+            return rObj
+          })
+          this.success = true
+        })
+      },
+
       cleanItems() {
         this.spaces.forEach(obj => {
           obj.loading = false 
