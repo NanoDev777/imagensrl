@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Alert;
 use App\Http\Controllers\Controller;
 use App\Reserva;
 use App\User;
@@ -14,7 +15,9 @@ class AuthController extends Controller
     public function login()
     {
         // Check if a user with the specified email exists
-        $user = User::whereEmail(request('username'))->first();
+        $user = User::where('email', '=', request('username'))
+            ->orWhere('name', request('username'))
+            ->first();
 
         if (!$user) {
             return response()->json([
@@ -38,7 +41,7 @@ class AuthController extends Controller
             'grant_type'    => 'password',
             'client_id'     => $client->id,
             'client_secret' => $client->secret,
-            'username'      => request('username'),
+            'username'      => $user->email,
             'password'      => request('password'),
         ];
 
@@ -47,31 +50,40 @@ class AuthController extends Controller
         $response = app()->handle($request);
 
         if ($response->getStatusCode() != 200) {
-            return response()->json([
-                'message' => 'error, intente de nuevo más tarde',
-                'status'  => 500,
-            ], 500);
+            return response()->json('Ocurrió un problema, por favor recargue la página o inténtelo de nuevo más tarde.', 500);
         }
 
         $data = json_decode($response->getContent());
 
-        $user->alert;
+        if ($user->id !== 1) {
+            $user->alert;
+            $day = Alert::select('day')->where('user_id', '=', $user->id)->first();
 
-        $alert = Reserva::from('Reserva as r')
-            ->select(DB::raw('COUNT(*) as total'))
-            ->where('r.Condicion', '=', 1)
-            ->where('r.fecha_fin', '>=', DB::raw('NOW()'))
-            ->where('r.fecha_fin', '<=', DB::raw("NOW() + INTERVAL 7 DAY"))
-            ->where('r.Id_cliente', '=', $user->client_id)
-            ->first();
+            $alert = Reserva::from('Reserva as r')
+                ->select(DB::raw('COUNT(*) as total'))
+                ->where('r.Condicion', '=', 1)
+                ->where('r.fecha_fin', '>=', DB::raw('NOW()'))
+                ->where('r.fecha_fin', '<=', DB::raw("NOW() + INTERVAL {$day->day} DAY"))
+                ->where('r.Id_cliente', '=', $user->client_id)
+                ->first();
 
-        return response()->json([
-            'token'      => $data->access_token,
-            'expires_in' => $data->expires_in,
-            'user'       => $user,
-            'alert'      => $alert->total,
-            'status'     => 200,
-        ]);
+            return response()->json([
+                'token'      => $data->access_token,
+                'expires_in' => $data->expires_in,
+                'user'       => $user,
+                'alert'      => $alert->total,
+                'status'     => 200,
+            ]);
+        } else {
+            return response()->json([
+                'token'      => $data->access_token,
+                'expires_in' => $data->expires_in,
+                'user'       => $user,
+                'alert'      => 0,
+                'status'     => 200,
+            ]);
+        }
+
     }
 
     public function logout()

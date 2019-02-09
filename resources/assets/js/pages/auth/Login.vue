@@ -13,7 +13,7 @@
               <v-alert v-if="alert" type="warning" :value="true"><strong>{{ message }}</strong></v-alert>
               <v-form ref="form" lazy-validation>
                 <v-text-field 
-                  label="Usuario"
+                  label="Usuario / Correo Electrónico"
                   prepend-icon="person" 
                   name="username"  
                   type="text"
@@ -32,7 +32,7 @@
                   v-model="form.password"
                 ></v-text-field>
                 <v-checkbox
-                  label="Recordarme"
+                  label="Recuérdame"
                   color="error"
                   type="checkbox"
                   v-model="remember"

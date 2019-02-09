@@ -33,8 +33,24 @@ export default [
       },
       {
         path: '/billboards',
-        name: 'ListBillboard',
-        component: ListBillboard
+        name: 'Billboards',
+        redirect: '/billboards',
+        component: {
+          render (c) { return c('router-view') }
+        },
+        children: [
+          {
+            path: '',
+            name: 'ListBillboard',
+            component: ListBillboard
+          },
+          {
+            path: ':slug',
+            name: 'ShowCity',
+            component: ShowCity,
+            props: true
+          }
+        ]
       },
       {
         path: '/reports',
@@ -58,21 +74,6 @@ export default [
             path: 'edit',
             name: 'EditAlert',
             component: FormAlert
-          }
-        ]
-      },
-      {
-        path: '/city',
-        name: 'City',
-        component: {
-          render (c) { return c('router-view') }
-        },
-        children: [
-          {
-            path: ':slug',
-            name: 'ShowCity',
-            component: ShowCity,
-            props: true
           }
         ]
       },
@@ -104,12 +105,11 @@ export default [
     ]  
   },
   {
-    path: '/billboards',
-    name: 'Billboards',
+    path: '/360',
+    name: '360',
     component: {
       render (c) { return c('router-view') }
     },
-    meta: { requiresAuth: true },
     children: [
       {
         path: ':uuid',

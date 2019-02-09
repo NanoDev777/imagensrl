@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Alert;
 use App\Espacio;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,6 +15,34 @@ class EspacioController extends Controller
     public function __construct(Espacio $espacio)
     {
         $this->espacio = $espacio;
+    }
+
+    //TODO
+    public function getEspaciosGeneral()
+    {
+        $v        = 0;
+        $t        = 0;
+        $espacios = $this->espacio->getEspaciosGeneral();
+        if ($espacios != null) {
+            foreach ($espacios as $valla) {
+                $v = $v + $valla->Total;
+                $t++;
+            }
+            return response()->json(["espacios" => $espacios, "vallas" => $v, "total" => $t], 200);
+        } else {
+            return response()->json('Ocurrió un problema, por favor recargue la página o inténtelo de nuevo más tarde.', 500);
+        }
+    }
+
+    //TODO
+    public function getVallasCiudad($ciudad)
+    {
+        $espacios = $this->espacio->getVallasCiudad($ciudad);
+        if ($espacios != null) {
+            return response()->json(["espacios" => $espacios], 200);
+        } else {
+            return response()->json('No se encontró el recurso.', 404);
+        }
     }
 
     public function getEspacios($cliente)
@@ -48,12 +78,6 @@ class EspacioController extends Controller
         return response()->json($espacio);
     }
 
-    public function getIdentifier()
-    {
-        $id = \Uuid::generate()->string;
-        return response()->json($id);
-    }
-
     public function getListEspacios(Request $request)
     {
         $rowsPerPage = 12;
@@ -61,11 +85,11 @@ class EspacioController extends Controller
         if ($request->has('rowsPerPage')) {
             $rowsPerPage = $request->input('rowsPerPage');
         }
-
+        //TODO
         $espacios = Espacio::join('tipo', 'espacio.Id_tipo', '=', 'tipo.Id_tipo')
             ->join('ciudad', 'ciudad.Id_ciudad', '=', 'espacio.Id_ciudad')
             ->join("imagen_cliente as i", "i.Id_espacio", "=", "espacio.Id_espacio")
-            ->select('espacio.Id_espacio', 'ciudad.Nombre as Ciudad', 'espacio.Zona', 'espacio.Ubicacion', 'tipo.Nombre as Tipo', 'espacio.Dimension', 'espacio.Iluminacion', 'espacio.Estado', 'espacio.uuid', 'espacio.Costo', 'i.Url')
+            ->select('espacio.Id_espacio', 'ciudad.Nombre as Ciudad', 'espacio.Zona', 'espacio.Ubicacion', 'tipo.Nombre as Tipo', 'espacio.Dimension', 'espacio.Cod_espacio', 'espacio.Estado', 'espacio.uuid', 'espacio.Costo', 'i.Url')
             ->where('espacio.Estado', '!=', 0)
             ->orderBy('espacio.Id_espacio', 'DESC');
 
@@ -75,6 +99,8 @@ class EspacioController extends Controller
             $espacios = $espacios->where(function ($query) use ($filter) {
                 $query->where('espacio.Zona', 'LIKE', "%" . $filter . "%")
                     ->orWhere('espacio.Ubicacion', 'LIKE', "%" . $filter . "%")
+                //TODO
+                    ->orWhere('espacio.Cod_espacio', 'LIKE', "%" . $filter . "%")
                     ->orWhere('tipo.Nombre', 'LIKE', "%" . $filter . "%");
             });
         }
@@ -112,14 +138,17 @@ class EspacioController extends Controller
     public function getAlerts(Request $request)
     {
         $client = $request->input('client');
-        $alert  = Espacio::from('Espacio as e')
+        $user   = User::select('id')->where('client_id', '=', $client)->first();
+        $day    = Alert::select('day')->where('user_id', '=', $user->id)->first();
+
+        $alert = Espacio::from('Espacio as e')
             ->join('Reserva as r', 'e.Id_espacio', '=', 'r.Id_espacio')
             ->join('Ciudad as c', 'e.Id_ciudad', '=', 'c.Id_ciudad')
             ->join('Imagen_cliente as i', 'e.Id_espacio', '=', 'i.Id_espacio')
             ->select('i.Url as image', 'c.Nombre as city', 'c.Slug as slug', 'e.Ubicacion as location', DB::raw('datediff (MAX(r.fecha_fin),CURDATE()) as day'))
             ->where('r.Condicion', '=', 1)
             ->where('r.fecha_fin', '>=', DB::raw('NOW()'))
-            ->where('r.fecha_fin', '<=', DB::raw("NOW() + INTERVAL 7 DAY"))
+            ->where('r.fecha_fin', '<=', DB::raw("NOW() + INTERVAL {$day->day} DAY"))
             ->where('r.Id_cliente', '=', $client)
             ->groupBy('e.Id_espacio');
 

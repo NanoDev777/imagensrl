@@ -16,8 +16,11 @@ return $request->user();
  */
 
 Route::post('login', 'Auth\AuthController@login');
+Route::get('photosphere/{uuid}', 'EspacioController@getPhotosphere');
 
 Route::get('test', function () {
+    $id = \Uuid::generate()->string;
+    return response()->json($id);
 });
 
 Route::middleware('auth:api')->group(function () {
@@ -26,8 +29,9 @@ Route::middleware('auth:api')->group(function () {
     Route::put('user/{id}', 'UserController@update')->middleware('check');
     Route::put('password/{id}', 'UserController@password')->middleware('check');
     Route::get('espacios/{cliente}', 'EspacioController@getEspacios');
+    Route::get('espacios-general', 'EspacioController@getEspaciosGeneral'); //TODO
     Route::get('detalle/{id}/{ciudad}', 'EspacioController@getEspaciosCiudad');
-    Route::get('uuid', 'EspacioController@getIdentifier'); //va salir
+    Route::get('detalle-general/{ciudad}', 'EspacioController@getVallasCiudad'); //TODO
     Route::get('photosphere/{uuid}', 'EspacioController@getPhotosphere');
     Route::get('billboards', 'EspacioController@getListEspacios');
     Route::get('cities', 'CiudadController@listCiudades');

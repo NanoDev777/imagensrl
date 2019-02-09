@@ -4,7 +4,10 @@
       <v-flex d-flex xs12 sm12 md12>
         <v-card>
           <v-card-title primary-title>
-            <h1 class="headline mb-0">Lista General De Vallas</h1>
+            <div>
+              <h1 class="headline mb-0">Lista General De Vallas</h1>
+              <span class="body-1">Revisa en detalle todas las vallas con las que cuenta nuestra empresa.</span>
+            </div>
           </v-card-title>
           <v-card-title>
             <v-container fluid grid-list-md>
@@ -64,15 +67,15 @@
                   <v-icon>check_circle_outline</v-icon>
                 </v-btn>
               </td>
+              <td><span class="body-2">{{ props.item.code }}</span></td>
               <td>{{ props.item.location }}</td>
               <td>{{ props.item.type }}</td>
               <td>{{ props.item.dimension }}</td>
-              <td>{{ props.item.illumination }}</td>
               <td v-if="props.item.state === 1"><v-chip label outline color="green">Disponible</v-chip></td>
               <td v-else><v-chip label outline color="red">Ocupada</v-chip></td>
               <td class="justify-center layout mx-0">
                 <v-tooltip left>
-                  <v-btn slot="activator" icon :href="`billboards/${props.item.uuid}`" target="_blank">
+                  <v-btn slot="activator" icon :href="`360/${props.item.uuid}`" target="_blank">
                     <v-icon>3d_rotation</v-icon>
                   </v-btn>
                   <span>Ver imagen 360</span>
@@ -120,11 +123,11 @@
         city: '',
         loading: false,
         headers: [
-          { text: 'Ciudad', value: 'ciudad', width: '175px' },
+          { text: 'Ciudad', value: 'ciudad', width: '150px' },
+          { text: 'Código', value: 'codigo' },
           { text: 'Ubicación', value: 'ubicacion' },
           { text: 'Tipo', value: 'tipo' },
           { text: 'Dimensión', value: 'dimension' },
-          { text: 'Iluminación', value: 'iluminacion' },
           { text: 'Estado', value: 'estado' },
           { text: 'Opciones', value: 'opciones' }
         ],
@@ -156,7 +159,7 @@
     },
 
     created() {
-      let cities = new CityService(axios.get('/api/cities'))
+      const cities = new CityService(axios.get('/api/cities'))
       cities.list()
       .then(cities => {
         this.cities = cities.list
@@ -249,7 +252,7 @@
               rObj['location'] = obj.Ubicacion
               rObj['type'] = obj.Tipo
               rObj['dimension'] = obj.Dimension
-              rObj['illumination'] = obj.Iluminacion
+              rObj['code'] = obj.Cod_espacio
               rObj['state'] = obj.Estado
               rObj['image'] = obj.Url
               rObj['uuid'] = obj.uuid

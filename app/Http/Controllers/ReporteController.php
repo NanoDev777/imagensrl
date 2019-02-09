@@ -126,7 +126,7 @@ class ReporteController extends Controller
                 $footer .= '<table style="border-spacing: 5px;">';
                 $footer .= '<tr style="background-color: #FBFCFC;"><td colspan="3"><strong>Contáctos:</strong></td></tr>';
                 $footer .= '<tr style="background-color: #FBFCFC;"><td colspan="3"><strong>La Paz: </strong>Telf.: (591-2) 2493155 - 2493156 Cel.: 76201364</td></tr>';
-                $footer .= '<tr style="background-color: #FBFCFC;"><td colspan="3"><strong>Santa Cruz: </strong>Telf./Fax: (591-3) 3494677 - Cel. 77537044</td></tr>';
+                $footer .= '<tr style="background-color: #FBFCFC;"><td colspan="3"><strong>Santa Cruz: </strong>Telf./Fax: (591-3) 3494677 - Cel. 76722731</td></tr>';
                 $footer .= '<tr style="background-color: #FBFCFC;"><td colspan="3"><strong>Cochabamba: </strong>Telf./Fax: (591-4) 4436519 - Cel.: 76789043 - 77539941</td></tr>';
                 $footer .= '</table>';
                 PDF::writeHTMLCell(187, 0, '11', '255', $footer, 0, 1, 0, true, '', true);
@@ -135,7 +135,7 @@ class ReporteController extends Controller
             PDF::writeHTMLCell(0, 0, '10', '26', '<hr>', 0, 0, 0, true, 'J', true);
             $title = '<h1>Información y detalles del espacio publitario</h1>';
             PDF::writeHTMLCell(0, 0, '10', '30', $title, 0, 0, 0, true, 'J', true);
-            $image = "https://www.siscoimagen.com/assets/images/uploads/{$espacio['images']}";
+            $image = "https://www.siscoimagen.com/assets/images/uploads/{$espacio['image']}";
             PDF::Image($image, 10, 40, 189, 100, 'JPG', '', 'T', false, 150, '', false, false, 1, false, false, false);
             $description = '<small>Fotografía del Espacio.</small>';
             PDF::writeHTMLCell(0, 0, '10', '141', $description, 0, 0, 0, true, 'J', true);
@@ -154,10 +154,15 @@ class ReporteController extends Controller
             $details .= '<thead><tr><th style="color: #fff; background-color: #B70202" colspan="3">CARACTERÍSTICAS</th></tr></thead>';
             $details .= '<tr style="background-color: #F0F0F0"><td colspan="3"><strong>Dimensión: </strong>' . $espacio['dimension'] . '</td></tr>';
             $details .= '<tr style="background-color: #F0F0F0"><td colspan="3"><strong>Iluminación: </strong>' . $espacio['illumination'] . '</td></tr>';
-            $details .= '<tr style="background-color: #F0F0F0"><td colspan="3"><strong>Costo mensual: </strong>' . $espacio['price'] . ' bs</td></tr>';
             $details .= '<tr style="background-color: #F0F0F0"><td colspan="3"><strong>Tipo de valla: </strong>' . $espacio['type'] . '</td></tr>';
             $details .= '</table>';
             PDF::writeHTMLCell(189, 0, 10, 190, $details, 0, 1, 0, true, '', true);
+
+            $scan = '';
+            $scan .= '<ul style="font-size:14pt;list-style-type:img|png|4|4|img/down.png">';
+            $scan .= '<li>Escanea el código QR</li>';
+            $scan .= '</ul>';
+            PDF::writeHTMLCell(189, 0, 133, 250, $scan, 0, 1, 0, true, '', true);
 
             $str = PDF::Output('hello_world.pdf', 'E');
             return response($str);

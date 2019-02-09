@@ -103,7 +103,7 @@
         { icon: 'home', text: 'Inicio', url: '/dashboard' },
         { icon: 'show_chart', text: 'Gráficas', url: '/graphics' },
         { icon: 'public', text: 'Espacios', url: '/billboards' },
-        { icon: 'assignment', text: 'Reportes y Gráficas', url: '/reports', },
+        { icon: 'assignment', text: 'Reportes', url: '/reports', },
         {
           icon: 'settings',
           'icon-alt': 'settings',
@@ -112,6 +112,16 @@
           children: [
             { icon: 'person', text: 'Perfil', url: '/profile', },
             { icon: 'notifications_active', text: 'Alerta', url: '/alert/edit', }
+          ]
+        },
+        {
+          icon: 'build',
+          'icon-alt': 'build',
+          text: 'Administración',
+          model: false,
+          children: [
+            { icon: 'group', text: 'Usuarios', url: '/users', },
+            { icon: 'create', text: 'Espacios', url: '/billboards/edit', }
           ]
         }
       ],

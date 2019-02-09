@@ -15,6 +15,7 @@
       :close-on-content-click="false"
       :nudge-width="300"
       bottom
+      v-if = "currentUser && currentUser.profile === 2"
     >
       <v-btn slot="activator" dark icon @click="getAlerts">
         <v-icon>notifications</v-icon>

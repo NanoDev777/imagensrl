@@ -30,6 +30,36 @@ class Espacio extends Model
         return $this->hasMany(Reserva::class, 'Id_espacio');
     }
 
+    //TODO
+    public function getEspaciosGeneral()
+    {
+        $espacios = DB::table('Ciudad as c')
+            ->join("Espacio as e", "e.Id_ciudad", "=", "c.Id_ciudad")
+            ->select("c.Slug", "c.Nombre as Ciudad", DB::raw("COUNT(e.Id_espacio) as Total"))
+            ->groupBy("c.Nombre")
+            ->get();
+        if (is_null($espacios)) {
+            return null;
+        } else {
+            return $espacios;
+        }
+    }
+
+    //TODO
+    public function getVallasCiudad($ciudad)
+    {
+        $espacios = DB::table('espacio as e')
+            ->join("ciudad as c", "e.Id_ciudad", "=", "c.Id_ciudad")
+            ->where('c.Slug', '=', $ciudad)
+            ->select("e.Id_espacio as Id", "c.Nombre", "e.uuid", "e.Ubicacion", "e.latitude", "e.longitude")
+            ->get();
+        if (is_null($espacios)) {
+            return null;
+        } else {
+            return $espacios;
+        }
+    }
+
     public function getEspacios($cliente)
     {
         $espacios = DB::table('reserva as r')
@@ -46,7 +76,6 @@ class Espacio extends Model
         } else {
             return $espacios;
         }
-
     }
 
     public function getTotalCiudad($cliente)
@@ -65,7 +94,6 @@ class Espacio extends Model
         } else {
             return $ciudades;
         }
-
     }
 
     public function getEspaciosCiudad($cliente, $slug)
@@ -86,6 +114,5 @@ class Espacio extends Model
         } else {
             return $espacios;
         }
-
     }
 }
