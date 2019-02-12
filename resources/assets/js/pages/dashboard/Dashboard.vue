@@ -4,7 +4,7 @@
       <v-flex d-flex xs12 sm8 md8>
         <v-card>
           <v-card-title primary-title>
-            <h3 class="headline mb-0">Mis Vallas a Nivel Nacional</h3>
+            <h1 class="headline mb-0">Mis Vallas a Nivel Nacional</h1>
           </v-card-title>
           <v-container fill-height v-show="loading">
             <v-layout row justify-center align-center>
@@ -32,6 +32,7 @@
               v-for="item in cities"
               :key="item.id"
               @click="loadDetail(item.Slug)"
+              :disabled="loading"
             >
               <v-list-tile-content>
               <v-list-tile-title>{{ item.Ciudad }}</v-list-tile-title>
@@ -187,7 +188,7 @@
       },
 
       loadMap(slug) {
-        this.loading = true
+        this.loading = true;
         GoogleMapsLoader.KEY = 'AIzaSyBrciONSLZYcR2kEKw24hgZnXIE7-G0me0';
         this.map = null;
         this.markers = [];

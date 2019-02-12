@@ -10,7 +10,15 @@
               <img src="/img/img.png" width="180px">
             </v-toolbar>
             <v-card-text @keyup.enter="login">
-              <v-alert v-if="alert" type="warning" :value="true"><strong>{{ message }}</strong></v-alert>
+              <v-alert 
+                v-if="alert" 
+                color="error"
+                icon="warning" 
+                outline 
+                :value="true"
+              >
+                {{ message }}
+              </v-alert>
               <v-form ref="form" lazy-validation>
                 <v-text-field 
                   label="Usuario / Correo Electrónico"

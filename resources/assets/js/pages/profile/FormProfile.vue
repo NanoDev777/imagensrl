@@ -139,7 +139,7 @@
 
     methods: {
       showUser() {
-        axios.get(`/api/user/${this.id}`)
+        axios.get(`/api/profile/${this.id}`)
         .then(response => {
           if (response.data.success) {
             this.form = response.data.data
@@ -153,10 +153,10 @@
         vm.$validator.validateAll().then((result) => {
           if (result) {
             vm.loading = true
-            axios.put(`/api/user/${vm.id}`, vm.form)
+            axios.put(`/api/profile/${vm.id}`, vm.form)
             .then(response => {
               if(response.data.success) {
-                vm.$snotify.success(response.data.message, 'Felicidades')
+                vm.$snotify.simple(response.data.message, 'Felicidades')
                 vm.$store.dispatch('saveUser', response.data.user)
               }
               vm.loading = false

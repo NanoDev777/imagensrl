@@ -127,6 +127,7 @@
     methods: {
       async logout() {
         await this.$store.dispatch('logout')
+        await this.$store.dispatch('clearBillboard')
         this.$router.push({ name: 'login' })
       },
 

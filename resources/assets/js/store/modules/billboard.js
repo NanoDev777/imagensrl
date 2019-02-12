@@ -5,12 +5,22 @@ const state = {
 const mutations = {
   SAVE_BILLBOARD(state, data) {
     state.billboard = data
+  },
+
+  CLEAR_BILLBOARD(state) {
+    state.billboard = null
   }
 }
 
 const actions = {
-  saveBillboard({commit}, token) {
-    commit('SAVE_BILLBOARD', token)
+  saveBillboard({commit}, data) {
+    commit('SAVE_BILLBOARD', data)
+  },
+
+  async clearBillboard({ commit }) {
+    try {
+      commit('CLEAR_BILLBOARD')
+    } catch (e) { }
   }
 }
 

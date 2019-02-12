@@ -14,7 +14,6 @@ class AuthController extends Controller
 {
     public function login()
     {
-        // Check if a user with the specified email exists
         $user = User::where('email', '=', request('username'))
             ->orWhere('name', request('username'))
             ->first();
@@ -22,6 +21,13 @@ class AuthController extends Controller
         if (!$user) {
             return response()->json([
                 'message' => 'El usuario y/o la contraseña son inválidos',
+                'status'  => 422,
+            ], 422);
+        }
+
+        if ($user->state === 0) {
+            return response()->json([
+                'message' => 'Usuario Inhabilitado',
                 'status'  => 422,
             ], 422);
         }
@@ -55,7 +61,8 @@ class AuthController extends Controller
 
         $data = json_decode($response->getContent());
 
-        if ($user->id !== 1) {
+        //TODO
+        if ($user->profile == 2) {
             $user->alert;
             $day = Alert::select('day')->where('user_id', '=', $user->id)->first();
 

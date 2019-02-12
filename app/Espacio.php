@@ -35,7 +35,7 @@ class Espacio extends Model
     {
         $espacios = DB::table('Ciudad as c')
             ->join("Espacio as e", "e.Id_ciudad", "=", "c.Id_ciudad")
-            ->select("c.Slug", "c.Nombre as Ciudad", DB::raw("COUNT(e.Id_espacio) as Total"))
+            ->select("c.Id_ciudad as id", "c.Slug", "c.Nombre as Ciudad", DB::raw("COUNT(e.Id_espacio) as Total"))
             ->groupBy("c.Nombre")
             ->get();
         if (is_null($espacios)) {

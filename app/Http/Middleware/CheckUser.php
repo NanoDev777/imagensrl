@@ -15,7 +15,7 @@ class CheckUser
      */
     public function handle($request, Closure $next)
     {
-        if ($request->id == auth()->user()->id) {
+        if ($request->id == auth()->user()->id || auth()->user()->profile == 1) {
             return $next($request);
         }
         return response()->json([

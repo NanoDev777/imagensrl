@@ -12,6 +12,10 @@ import ShowBillboard from '../pages/billboard/ShowBillboard.vue'
 import ListBillboard from '../pages/billboard/ListBillboard.vue'
 import ShowAlert from '../pages/alert/ShowAlert.vue'
 import FormAlert from '../pages/alert/FormAlert.vue'
+import ListUsers from '../pages/user/ListUsers.vue'
+import Administration from '../pages/billboard/Administration.vue'
+import FormUser from '../pages/user/FormUser.vue'
+
 
 export default [
   {
@@ -99,6 +103,46 @@ export default [
             path: ':id/password',
             name: 'Password',
             component: Password
+          }
+        ]
+      },
+      {
+        path: '/users',
+        name: 'Users',
+        redirect: '/users',
+        component: {
+          render (c) { return c('router-view') }
+        },
+        children: [
+          {
+            path: '',
+            name: 'ListUsers',
+            component: ListUsers
+          },
+          {
+            path: 'create',
+            name: 'CreateUser',
+            component: FormUser
+          },
+          {
+            path: ':id/edit',
+            name: 'EditUser',
+            component: FormUser
+          }
+        ]
+      },
+      {
+        path: '/administration',
+        name: 'Administration',
+        redirect: '/administration',
+        component: {
+          render (c) { return c('router-view') }
+        },
+        children: [
+          {
+            path: '',
+            name: 'Admin',
+            component: Administration
           }
         ]
       }

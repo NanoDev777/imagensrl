@@ -121,7 +121,7 @@
           model: false,
           children: [
             { icon: 'group', text: 'Usuarios', url: '/users', },
-            { icon: 'create', text: 'Espacios', url: '/billboards/edit', }
+            { icon: 'create', text: 'Espacios', url: '/administration', }
           ]
         }
       ],
