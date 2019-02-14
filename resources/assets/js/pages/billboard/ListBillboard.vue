@@ -260,11 +260,14 @@
               rObj['reserved'] = false
               rObj['loading'] = false
               rObj['disabled'] = false
-              this.getBillboard.forEach(o => {
-                if (o.Id == obj.Id_espacio) {
-                  rObj.reserved = true
-                }
-              })
+
+              if (this.getBillboard.length > 0) {
+                this.getBillboard.forEach(o => {
+                  if (o.Id == obj.Id_espacio) {
+                    rObj.reserved = true
+                  }
+                })
+              }
               return rObj
             })
             resolve({

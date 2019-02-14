@@ -5,7 +5,7 @@
         <v-card>
           <modal-delete :loader="loader" :dialog="dialog" @hide="hide" @deleted="deleted"></modal-delete>
           <v-card-title primary-title>
-            <h3 class="headline mb-0">Usuarios</h3>
+            <h3 class="headline mb-0">Lista General De Usuarios</h3>
           </v-card-title>
           <v-container fluid>
             <v-layout>
@@ -13,7 +13,6 @@
                 <v-card>
                   <v-card-title>
                     <v-btn 
-                      
                       dark color="grey darken-1" 
                       slot="activator" 
                       class="mb-2"

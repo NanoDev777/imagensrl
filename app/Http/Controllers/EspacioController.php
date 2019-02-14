@@ -7,6 +7,7 @@ use App\Espacio;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class EspacioController extends Controller
 {
@@ -161,12 +162,71 @@ class EspacioController extends Controller
         return response()->json($alert, 200);
     }
 
-    public function getTotalRented()
+    // TODO
+    public function searchBillboard($data)
+    {
+        $espacios = Espacio::from('Espacio as e')
+            ->select('e.Id_espacio', 'e.Cod_espacio', 'e.Ubicacion')
+            ->where(function ($query) use ($data) {
+                $query->where('e.Cod_espacio', 'like', '%' . $data . '%')
+                    ->orWhere('e.Ubicacion', 'like', '%' . $data . '%');
+            })->get();
+        return response()->json(['data' => $espacios], 200);
+    }
+
+    // TODO
+    public function getBillboard($id)
+    {
+        $espacio = Espacio::from('Espacio as e')
+            ->select('e.Id_espacio', 'e.Latitude', 'e.Longitude', 'e.Photosphere')
+            ->where('e.Id_espacio', $id)->get()->first();
+        return response()->json([
+            'success' => true,
+            'data'    => $espacio,
+        ], 200);
+    }
+
+    // TODO
+    public function saveImage(Request $request)
+    {
+        try {
+            $espacio            = Espacio::find($request->id);
+            $espacio->Latitude  = $request->latitude;
+            $espacio->Longitude = $request->longitude;
+
+            if (!$espacio->Uuid) {
+                $espacio->Uuid = \Uuid::generate()->string;
+            }
+
+            if ($request->get('imageFile')) {
+                $image_path = public_path('img/360/') . $espacio->Photosphere;
+                if (File::exists($image_path)) {
+                    File::delete($image_path);
+                }
+                $image = $request->get('imageFile');
+                $name  = time() . '.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
+                \Image::make($request->get('imageFile'))->save(public_path('img/360/') . $name);
+                $espacio->Photosphere = $name;
+            }
+
+            $espacio->save();
+        } catch (\Exception $e) {
+            return response()->json('No es posible realizar esta acción, por favor inténtelo de nuevo más tarde.', 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Los datos se registraron con éxito!',
+        ], 201);
+
+    }
+
+    public function getTotalRented($customer)
     {
         $espacios = Espacio::join('ciudad', 'espacio.Id_ciudad', '=', 'ciudad.Id_ciudad')
             ->join('reserva', 'espacio.Id_espacio', '=', 'reserva.Id_espacio')
             ->select('ciudad.Nombre as city', DB::raw('count(*) as total'))
-            ->where('reserva.Id_cliente', '=', 14)
+            ->where('reserva.Id_cliente', '=', $customer)
             ->where(function ($q) {
                 $q->where('reserva.Estado', 1)
                     ->orWhere('reserva.Estado', 2);
@@ -177,12 +237,12 @@ class EspacioController extends Controller
         return response()->json($espacios);
     }
 
-    public function getRentedActive()
+    public function getRentedActive($customer)
     {
         $espacios = Espacio::join('ciudad', 'espacio.Id_ciudad', '=', 'ciudad.Id_ciudad')
             ->join('reserva', 'espacio.Id_espacio', '=', 'reserva.Id_espacio')
             ->select('ciudad.Nombre as city', DB::raw('count(*) as total'))
-            ->where('reserva.Id_cliente', '=', 14)
+            ->where('reserva.Id_cliente', '=', $customer)
             ->where('reserva.Condicion', '=', 1)
             ->groupBy('city')
             ->get();

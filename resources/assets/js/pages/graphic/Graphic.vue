@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid grid-list-md>
+  <v-container fluid grid-list-md v-show="success">
     <v-layout row wrap>
       <v-flex d-flex xs12 sm12 md12>
         <v-card>
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import * as am4core from "@amcharts/amcharts4/core";
   import * as am4charts from "@amcharts/amcharts4/charts";
   import am4themes_animated from "@amcharts/amcharts4/themes/animated";
@@ -39,20 +40,31 @@
   export default {
     data() {
       return {
-        loading: false,
+        success: false,
         total: [],
         rented: []
       }
     },
 
+    computed: {
+      ...mapGetters([
+        'currentUser'
+      ])
+    },
+
     mounted() {
-      Promise.all([this.getTotalRented(), this.getRentedActive()]);
+      if (this.currentUser.profile === 2) {
+        Promise.all([this.getTotalRented(), this.getRentedActive()])
+        .then(() => {
+          this.success = true
+        });
+      }
     },
 
     methods: {
       getTotalRented() {
         return new Promise((resolved, reject) => {
-          axios.get(`/api/total-rented`)
+          axios.get(`/api/total-rented/${this.currentUser.client_id}`)
           .then((response) => { 
             this.total = response.data;
             let chart = am4core.create(this.$refs.chartdiv, am4charts.XYChart3D);
@@ -96,13 +108,14 @@
             chart.cursor = new am4charts.XYCursor();
             chart.cursor.lineX.strokeOpacity = 0;
             chart.cursor.lineY.strokeOpacity = 0;
+            resolved()
           })
         })
       },
 
       getRentedActive() {
         return  new Promise((resolved, reject) => {
-          axios.get(`/api/rented-active`)
+          axios.get(`/api/rented-active/${this.currentUser.client_id}`)
           .then((response) => { 
             this.rented = response.data;
             let chart = am4core.create(this.$refs.piediv, am4charts.PieChart);
@@ -126,6 +139,7 @@
             pieSeries.slices.template.strokeWidth = 0;
 
             chart.legend = new am4charts.Legend();
+            resolved()
           })
         })
       }

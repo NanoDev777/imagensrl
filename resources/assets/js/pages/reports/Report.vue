@@ -27,17 +27,7 @@
               <v-list-tile-action>
                 <v-btn 
                   title="Descargar presentación"
-                  v-if="index === 2"
-                  :disabled="item.disabled" 
-                  icon 
-                  ripple 
-                  @click="dialog = !dialog" 
-                >
-                  <v-icon color="grey lighten-1">get_app</v-icon>
-                </v-btn>
-                <v-btn 
-                  title="Descargar presentación"
-                  v-else-if="index === 0"
+                  v-if="item.id === 1"
                   :disabled="item.disabled" 
                   :loading="item.loading" 
                   icon 
@@ -48,12 +38,22 @@
                 </v-btn>
                 <v-btn 
                   title="Descargar presentación"
-                  v-else
+                  v-else-if="item.id === 2"
                   :disabled="item.disabled" 
                   :loading="item.loading" 
                   icon 
                   ripple 
                   @click="listGeneralBillboard(item)"
+                >
+                  <v-icon color="grey lighten-1">get_app</v-icon>
+                </v-btn>
+                <v-btn 
+                  title="Descargar presentación"
+                  v-else
+                  :disabled="item.disabled" 
+                  icon 
+                  ripple 
+                  @click="dialog = !dialog" 
                 >
                   <v-icon color="grey lighten-1">get_app</v-icon>
                 </v-btn>
@@ -79,8 +79,9 @@
       return {
         dialog: false,
         url: '/api/billboard-rented',
-        items: [
+        entries: [
           { 
+            id: 1,
             icon: 'description', 
             iconClass: 'grey lighten-1 white--text', 
             title: 'Lista de tus vallas alquiladas', 
@@ -89,6 +90,7 @@
             disabled: false
           },
           { 
+            id: 2,
             icon: 'description', 
             iconClass: 'grey lighten-1 white--text', 
             title: 'Lista general de vallas', 
@@ -97,6 +99,7 @@
             disabled: false 
           },
           { 
+            id: 3,
             icon: 'description', 
             iconClass: 'grey lighten-1 white--text', 
             title: 'Lista de vallas filtradas', 
@@ -111,7 +114,12 @@
     computed: {
       ...mapGetters([
         'currentUser'
-      ])
+      ]),
+
+      items () {
+        const filter = this.entries.slice(1, 3);
+        return this.currentUser.profile === 3 ? filter : this.entries
+      }
     },
 
     methods: {

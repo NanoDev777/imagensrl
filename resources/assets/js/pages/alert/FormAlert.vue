@@ -87,7 +87,7 @@
     },
 
     created() {
-      this.showAlert();
+      if (this.currentUser.profile === 2) this.showAlert();
     },
 
     mounted () {

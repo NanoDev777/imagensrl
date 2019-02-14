@@ -34,7 +34,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('user/{id}', 'UserController@show')->middleware('admin');
     Route::put('user/{id}', 'UserController@update')->middleware('admin');
     Route::delete('user/{id}', 'UserController@destroy')->middleware('admin');; //TODO
-    Route::put('password/{id}', 'UserController@password')->middleware('check', 'admin');
+    Route::put('password/{id}', 'UserController@password')->middleware('check');
 
     Route::get('espacios/{cliente}', 'EspacioController@getEspacios');
     Route::get('espacios-general', 'EspacioController@getEspaciosGeneral'); //TODO
@@ -49,9 +49,12 @@ Route::middleware('auth:api')->group(function () {
     Route::get('billboard-rented', 'ReporteController@listBillboardRented');
     Route::get('general-bilboard', 'ReporteController@listGeneralBillboard');
     Route::get('billboard-filtered', 'ReporteController@listBillboardFiltered');
-    Route::get('total-rented', 'EspacioController@getTotalRented');
-    Route::get('rented-active', 'EspacioController@getRentedActive');
+    Route::get('total-rented/{customer}', 'EspacioController@getTotalRented');
+    Route::get('rented-active/{customer}', 'EspacioController@getRentedActive');
     Route::get('alerts', 'EspacioController@getAlerts');
     Route::get('alerts/{id}', 'AlertController@show');
     Route::put('alerts/{id}', 'AlertController@update');
+    Route::get('search-billboard/{data}', 'EspacioController@searchBillboard'); //TODO
+    Route::get('get-billboard/{id}', 'EspacioController@getBillboard'); //TODO
+    Route::post('save-image', 'EspacioController@saveImage'); //TODO
 });

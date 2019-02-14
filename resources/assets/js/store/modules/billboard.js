@@ -1,5 +1,5 @@
 const state = {
-  billboard: null
+  billboard: []
 }
 
 const mutations = {
@@ -8,7 +8,7 @@ const mutations = {
   },
 
   CLEAR_BILLBOARD(state) {
-    state.billboard = null
+    state.billboard = []
   }
 }
 

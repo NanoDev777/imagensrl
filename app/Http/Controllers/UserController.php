@@ -60,7 +60,7 @@ class UserController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['No es posible realizar esta acción, por favor inténtelo de nuevo más tarde.'], 500);
+            return response()->json('No es posible realizar esta acción, por favor inténtelo de nuevo más tarde.', 500);
         }
 
         return response()->json([
@@ -92,7 +92,7 @@ class UserController extends Controller
                 'user'    => $user,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json(['No es posible realizar esta acción, por favor inténtelo de nuevo más tarde.'], 500);
+            return response()->json('No es posible realizar esta acción, por favor inténtelo de nuevo más tarde.', 500);
         }
     }
 
@@ -102,7 +102,7 @@ class UserController extends Controller
             $user = User::find($id);
             $user->delete();
         } catch (\Exception $e) {
-            return response()->json(['No es posible realizar esta acción, por favor inténtelo de nuevo más tarde.'], 500);
+            return response()->json('No es posible realizar esta acción, por favor inténtelo de nuevo más tarde.', 500);
         }
         return response()->json([
             'success' => true,
@@ -131,7 +131,7 @@ class UserController extends Controller
                 ]);
             }
         } catch (\Exception $e) {
-            return response()->json(['No es posible realizar esta acción, por favor inténtelo de nuevo más tarde.'], 500);
+            return response()->json('No es posible realizar esta acción, por favor inténtelo de nuevo más tarde.', 500);
         }
     }
 }

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid grid-list-md id="theme">
-    <v-layout row wrap v-show="success">
+    <v-layout row wrap v-if="success">
       <v-flex d-flex xs12 sm8 md8>
         <v-card>
           <v-card-title primary-title>
@@ -80,7 +80,7 @@
     mounted () {
       if (this.currentUser.profile === 1) { 
         this.initCities()
-      } else {
+      } else if (this.currentUser.profile === 2) {
         this.initMap()
       }
     },

@@ -46,6 +46,7 @@
               v-for="(child, i) in item.children"
               :key="i"
               router :to="child.url"
+              v-show="permission(child.name) || child.name ==''"
             >
               <v-list-tile-action v-if="child.icon">
                 <v-icon>{{ child.icon }}</v-icon>
@@ -57,7 +58,7 @@
               </v-list-tile-content>
             </v-list-tile>
           </v-list-group>
-          <v-list-tile v-else :key="item.text" router :to="item.url">
+          <v-list-tile v-else :key="item.text" router :to="item.url" v-show="permission(item.name) || item.name ==''">
             <v-list-tile-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
@@ -87,6 +88,7 @@
 <script>
   import AppFooter from './AppFooter.vue'
   import AppToolbar from './AppToolbar.vue'
+  import permission from '../mixins/permission'
 
   export default {
     name: 'layout',
@@ -100,18 +102,18 @@
         drawer: true,
         miniVariant: false,
         items: [
-        { icon: 'home', text: 'Inicio', url: '/dashboard' },
-        { icon: 'show_chart', text: 'Gráficas', url: '/graphics' },
-        { icon: 'public', text: 'Espacios', url: '/billboards' },
-        { icon: 'assignment', text: 'Reportes', url: '/reports', },
+        { icon: 'home', text: 'Inicio', url: '/dashboard', name: 'home' },
+        { icon: 'show_chart', text: 'Gráficas', url: '/graphics', name: 'graphics' },
+        { icon: 'public', text: 'Espacios', url: '/billboards', name: 'billboards' },
+        { icon: 'assignment', text: 'Reportes', url: '/reports', name: 'reports' },
         {
           icon: 'settings',
           'icon-alt': 'settings',
           text: 'Configuración',
           model: false,
           children: [
-            { icon: 'person', text: 'Perfil', url: '/profile', },
-            { icon: 'notifications_active', text: 'Alerta', url: '/alert/edit', }
+            { icon: 'person', text: 'Perfil', url: '/profile', name: 'profile' },
+            { icon: 'notifications_active', text: 'Alerta', url: '/alert/edit', name: 'alert' }
           ]
         },
         {
@@ -120,14 +122,16 @@
           text: 'Administración',
           model: false,
           children: [
-            { icon: 'group', text: 'Usuarios', url: '/users', },
-            { icon: 'create', text: 'Espacios', url: '/administration', }
+            { icon: 'group', text: 'Usuarios', url: '/users', name: 'users' },
+            { icon: 'create', text: 'Espacios', url: '/administration', name: 'admin' }
           ]
         }
       ],
         width: 220
       }
-    }
+    },
+
+    mixins: [permission]
   }
 </script>
 

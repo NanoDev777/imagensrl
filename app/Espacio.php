@@ -9,6 +9,7 @@ class Espacio extends Model
 {
     protected $table      = 'espacio';
     protected $primaryKey = 'Id_espacio';
+    public $timestamps    = false; // TODO
 
     public function tipo()
     {

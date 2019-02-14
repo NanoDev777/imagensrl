@@ -96,7 +96,11 @@
               vm.$store.dispatch('saveExpiration', data.expires_in + Date.now())
               vm.$store.dispatch('saveUser', data.user)
               vm.$store.dispatch('saveAlert', data.alert)
-              vm.$router.push({ name: 'Home' })
+              if (data.user.profile === 1 || data.user.profile === 2) {
+                vm.$router.push({ name: 'Home' })
+              } else {
+                vm.$router.push({ name: 'Billboards' })
+              }
             }
           })
           .catch(({response}) => {
